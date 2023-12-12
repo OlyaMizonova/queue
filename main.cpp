@@ -10,7 +10,7 @@
 int main(int argc, char** argv) {
 	::testing::InitGoogleTest(&argc, argv);
 	return RUN_ALL_TESTS();
-	/*TQueue<int> q(15); int t;
+	/*TListQueue<int> q(15); int t;
 	std::cout << "1. 0 - is not empty\n2. 1 - is empty\n now queue is "<< q.is_empty()<<std::endl;
 	for (int i = 0; i < 5; i++) {
 		std::cout << i<<" elem = ";
@@ -40,7 +40,7 @@ int main() {
 	std::uniform_int_distribution<> prob_proc(1,9);
 	std::uniform_int_distribution<> prob_time(1, 5);
 
-	TQueue<Tasks> que(100);
+	TListQueue<Tasks> que;
 	double q_Static, p_Static;
 	int n, el, iden = 0;
 	std::cout << "Enter p (add to queue): ";
@@ -62,7 +62,7 @@ int main() {
 		que.push(temp);
 	}
 	int startStatus = n, finishStatus = n;
-	int pushes = 0, pops = 0;
+	int pushes = 0, pops = 0, empty_que = 0;
 	for (int i = 0; i < 100; i++) {
 		double p = prob_add(gen)/1000.0, q = prob_out(gen)/1000.0;
 		if (p < p_Static) {
@@ -78,10 +78,13 @@ int main() {
 				finishStatus--;
 				pops++;
 			}
+			else {
+				empty_que++;
+			}
 		}
 	}
 	std::cout << "start status: " << startStatus << " finish status: " << finishStatus
-		<< " pushes: " << pushes << " pops " << pops;
+		<< " \npushes: " << pushes << " pops " << pops <<"\nque was empty "<<empty_que<<" times";
 	return 0;
 }
 #endif !TESTS

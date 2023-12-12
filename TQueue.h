@@ -1,48 +1,64 @@
 #pragma once
+
+template<class T>
+struct TNode {
+	T val;
+	TNode<T>* pNext;
+};
+
 template <class T>
-class TQueue {
+class TListQueue {
 public:
-	TQueue<T>(int size_) {
-		if (size_ < 0) { throw - 1; }
-		pMem = new T[size_];
-		count = 0; size = size_;
-		start = 0; finish = -1;
+	TListQueue<T>() {
+		pFirst = nullptr;
+		pLast = nullptr;
 	}
-	~TQueue() {
-		delete[]pMem;
-	}
-	bool is_full() {
-		return count == size;
+	~TListQueue() {
+		while(!is_empty()) {
+			pop();
+		}
 	}
 	bool is_empty() {
-		return !count;
+		return pFirst==nullptr;
 	}
 	T pop() {
 		if (is_empty()) {
 			throw "empty queue";
 		}
-		T el = pMem[start];
-		start++;
-		start =start % size;
-		count--;
+		TNode<T>* p = pFirst;
+		T el = pFirst->val;
+		pFirst = pFirst->pNext;
+		delete p;
 		return el;
 	}
-	T front() const {
-		return pMem[start];
-	}
-	T back() const {
-		return pMem[finish];
-	}
-	void push(const T &el) {
-		finish++;
-		finish = finish % size;
-		if (is_full()) {
-			throw "full queue";
+	T front() {
+		if (is_empty()) {
+			throw "empty queue";
 		}
-		pMem[finish] = el;
-		count++;
+		return pFirst->val;
+	}
+	T back() {
+		if (is_empty()) {
+			throw "empty queue";
+		}
+		return pLast->val;
+	}
+	void push(T el) {
+		if (is_empty()) {
+			TNode<T>* newElem = new TNode<T>;
+			pFirst = newElem;
+			pLast = newElem;
+			newElem->val = el;
+			newElem->pNext = nullptr;
+		}
+		else {
+			TNode<T>* newElem = new TNode<T>;
+			pLast->pNext = newElem;
+			newElem->val = el;
+			newElem->pNext = nullptr;
+		}
 	}
 private:
-	T* pMem;
-	int count, size, start, finish;
+	TNode<T>* pFirst;
+	TNode<T>* pLast;
 };
