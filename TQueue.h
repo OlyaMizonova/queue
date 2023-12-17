@@ -1,64 +1,81 @@
 #pragma once
 
-template<class T>
-struct TNode {
-	T val;
-	TNode<T>* pNext;
-};
-
 template <class T>
-class TListQueue {
+class TQueue {
 public:
-	TListQueue<T>() {
-		pFirst = nullptr;
-		pLast = nullptr;
+	TQueue<T>(int size_=10) {
+		if (size_ < 0) { throw - 1; }
+		pMem = new T[size_];
+		count = 0; size = size_;
+		start = 0; finish = -1;
 	}
-	~TListQueue() {
-		while(!is_empty()) {
-			pop();
+	~TQueue() {
+		delete[]pMem;
+	}
+
+	TQueue<T>& operator = (const TQueue<T>&q) {
+		if (this == &q) {
+			return *this;
 		}
+		if (size != q.size) {
+			delete[]pMem;
+			pMem = new T[q.size];
+			size = q.size;
+		}
+		count = q.count;
+		start = q.start;
+		finish= q.finish;
+		for (int i = 0; i < size; i++) {
+			pMem[i] = q.pMem[i];
+		}
+		return *this;
+	}
+
+
+	bool is_full() {
+		return count == size;
 	}
 	bool is_empty() {
-		return pFirst==nullptr;
+		return !count;
 	}
 	T pop() {
 		if (is_empty()) {
 			throw "empty queue";
 		}
-		TNode<T>* p = pFirst;
-		T el = pFirst->val;
-		pFirst = pFirst->pNext;
-		delete p;
+		T el = pMem[start];
+		start++;
+		start = start % size;
+		count--;
 		return el;
 	}
-	T front() {
-		if (is_empty()) {
-			throw "empty queue";
-		}
-		return pFirst->val;
+	T front() const {
+		return pMem[start];
 	}
-	T back() {
-		if (is_empty()) {
-			throw "empty queue";
-		}
-		return pLast->val;
+	T back() const {
+		return pMem[finish];
 	}
-	void push(T el) {
-		if (is_empty()) {
-			TNode<T>* newElem = new TNode<T>;
-			pFirst = newElem;
-			pLast = newElem;
-			newElem->val = el;
-			newElem->pNext = nullptr;
+	void push(const T& el) {
+		finish++;
+		finish = finish % size;
+		if (is_full()) {
+			throw "full queue";
 		}
-		else {
-			TNode<T>* newElem = new TNode<T>;
-			pLast->pNext = newElem;
-			newElem->val = el;
-			newElem->pNext = nullptr;
-		}
+		pMem[finish] = el;
+		count++;
+	}
+	int GetMaxSize() const{
+		return size;
+	}
+	int GetStart() const{
+		return start;
+	}
+	int GetFinish() const{
+		return finish;
+	}
+	int GetCount() const {
+		return count;
 	}
 private:
-	TNode<T>* pFirst;
-	TNode<T>* pLast;
+	T* pMem;
+	int count, size, start, finish;
 };
