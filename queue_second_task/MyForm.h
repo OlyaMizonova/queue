@@ -443,7 +443,7 @@ namespace graficQueue{
 		//TQueue<Tasks> que(s);
 		TQueue<Tasks> t(s);
 		que = t;
-		double qStatic = Convert::ToDouble(setQ->Text), pStatic = double::Parse(setP->Text);
+		double qStatic = Convert::ToDouble(setQ->Text), pStatic = Convert::ToDouble(setP->Text);
 		int n = Int32::Parse(setStartElements->Text);
 		
 		int pushes = 0, pops = 0, empty_que = 0, full_que = 0, iden = 0;
