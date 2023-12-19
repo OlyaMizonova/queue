@@ -4,7 +4,7 @@
 
 #include <random>
 
-//#define TESTS
+#define TESTS
 
 #ifdef TESTS
 int main(int argc, char** argv) {
